@@ -14,7 +14,10 @@
             }
         })
         return o
-    }
+    };
+    $.getByName = function(name) {
+        return $("[name=" + name + "]");
+    };
 })(jQuery);
 
 //SINCCO: Agrupación de funciones cutomizadas

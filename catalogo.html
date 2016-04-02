@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="es">
+    <meta charset="UTF-8">
+    <title>Productos - Magento2</title>
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-2.2.2.min.js" integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI=" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="libs/sincco.js"></script>
+    <script type="text/javascript" src="libs/sinccoTemplates.js"></script>
+    <script type="text/javascript" src="libs/app.js"></script>
+
+    <link rel="stylesheet" href="styles.css" type="text/css" />
+</head>
+
+<body>
+
+<div class="container-fluid outerdiv">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Buscar..." name="value">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="button" id="btnSearch">Buscar!</button>
+                    <button class="btn btn-info" type="button" id="btnAdvanced">...</button>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-info advanced-search">
+        <div class="panel-heading">Búsqueda avanzada</div>
+        <div class="panel-body">
+            <div class="col-md-4">
+                <span class="label label-default">Que el campo sea...</span>
+                <select class="form-control" name="field">
+                    <option value="name" selected>Nombre</option>
+                    <option value="sku">SKU</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <span class="label label-default">Y el valor... </span>
+                <select class="form-control" name="condition">
+                    <option value="eq">Igual a</option>
+                    <option value="like" selected>Parecido a</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <span class="label label-default">Y mostrar como... </span>
+                <select class="form-control" name="style">
+                    <option value="list" selected>Lista</option>
+                    <option value="grid">Grid</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="container-fluid outerdiv">
+    <table id="tblResults" class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>SKU</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Tipo</th>
+            </tr>
+        </thead>
+        <tbody data-template="templates/resultsProducts">
+        </tbody>
+    </table>
+</div>
+
+<div class="container-fluid outerdiv">
+    <div class="prodResults">
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#tblResults").hide();
+        $('.advanced-search').hide();
+        // initFormats();
+        $('#btnAdvanced').click(function() { $('.advanced-search').toggle(); });
+        $("#btnSearch").click(function () {
+            $('.prodResults').setTemplate("templates/products/results_");
+            $('.prodResults').setTemplate($('.prodResults').getTemplate() + $.getByName('style').val());
+            magento.get("products", {data: [{"field": $.getByName('field').val(), "value": $.getByName('value').val(), "condition": $.getByName('condition').val()}]}, function(results){
+                $('.prodResults').processTemplate(results.items);
+            });
+        });
+    });
+</script>
+
+</body>
+
+</html>
